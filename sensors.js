@@ -20,7 +20,8 @@ function readings(tag) {
   const temperature = tempSign === 0 ? uTemp/256.0 : -1 * uTemp/256.0
   const pressure = (((decoded[4] << 8) + decoded[5]) + 50000)/100
   const humidity = decoded[1] * 0.5
-  const name = config.tags.find(ruuvitag => ruuvitag.id === tag.id).name || ruuvitag.id
+  const namedTag = config.tags.find(ruuvitag => ruuvitag.id === tag.id)
+  const name = namedTag ? namedTag.name : tag.id
 
   tagdata = {
     temperature: temperature,
