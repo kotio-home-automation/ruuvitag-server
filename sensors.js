@@ -10,7 +10,6 @@ scanner.on('updated', readings)
 // Supports ruuvitag weather station formats 2 & 4
 // URL decoding borrowed from https://github.com/kyyhkynen/node-ruuvitag-weather
 function readings(tag) {
-  console.log('tag', tag)
   const hash = tag.url.split('#')[1]
   const decoded = Buffer.from(hash, 'base64')
 
