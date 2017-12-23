@@ -42,9 +42,9 @@ Go to URL http://localhost:3102/ruuvitag
 
 To identify and name your ruuvitags I have added a utility that can scan beacons. I suggest that you idenitify your beacons one at a time.
 
-* Start with going to server directory `../utils`.
+* Start with cloning kotio server-utils repository https://github.com/kotio-home-automation/server-utils
 
-1) start tag #1 and run `sudo node ruuvitag-identifier.js`
+1) start tag #1 and run `sudo node ruuvitag-identifier.js` in server-utils directory
 2) watch your console and take note of the tag's id
 3) add the _id_ and a _name_ that you want to give to the ruuvitag to file's `src/config.js` variable `tags`
 4) repeat steps 1-3 for all your ruuvitags
