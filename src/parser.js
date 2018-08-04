@@ -21,7 +21,7 @@ const parseRawTagData = (rawData, uuid) => {
   const batteryEnd         = 32
 
   const hexHumidity = rawData.substring(humidityStart, humidityEnd)
-  const humidity = parseInt(hexHumidity, 16) / 2
+  const humidity = parseInt(hexHumidity, HEXADECIMAL) / 2
 
   const hexTemperatureString = rawData.substring(temperatureStart, temperatureEnd)
   const temperatureFullDegrees = parseInt(hexTemperatureString.substring(0, 2), HEXADECIMAL)
