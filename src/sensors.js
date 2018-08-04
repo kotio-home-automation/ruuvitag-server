@@ -1,38 +1,44 @@
-const scanner = require('eddystone-beacon-scanner')
-const config = require('./config')
-const SCANINTERVAL = 120000
-const SCANTIME = 2500
-const data = new Map()
+const noble = require('noble')
+const parser = require('./parser')
+const SCANINTERVAL = 20000
+const SCANTIME = 1000
+const jdata = new Map()
 
-scanner.on('found', readings)
-scanner.on('updated', readings)
+const onDiscover = (peripheral) => {
 
-// Supports ruuvitag weather station formats 2 & 4
-// URL decoding borrowed from https://github.com/kyyhkynen/node-ruuvitag-weather
-function readings(tag) {
-  const hash = tag.url.split('#')[1]
-  const decoded = Buffer.from(hash, 'base64')
+  const manufacturerData = peripheral.advertisement ? peripheral.advertisement.manufacturerData : undefined
+  const serviceDataArray = peripheral.advertisement ? peripheral.advertisement.serviceData : undefined;
+  const serviceData = serviceDataArray && Array.isArray(serviceDataArray) ? serviceDataArray[0] : undefined
 
-  uTemp = (((decoded[2] & 127) << 8) | decoded[3])
-  const tempSign = (decoded[2] >> 7) & 1
-
-  const temperature = tempSign === 0 ? uTemp/256.0 : -1 * uTemp/256.0
-  const pressure = (((decoded[4] << 8) + decoded[5]) + 50000)/100
-  const humidity = decoded[1] * 0.5
-  const namedTag = config.tags.find(ruuvitag => ruuvitag.id === tag.id)
-  const name = namedTag ? namedTag.name : tag.id
-
-  tagdata = {
-    temperature: temperature,
-    pressure: pressure,
-    humidity: humidity
+  // a ruuvitag in raw mode is found
+  if (manufacturerData && manufacturerData[0] === 0x99 && manufacturerData[1] === 0x04) {
+    const tagData = parser.parseRawTagData(manufacturerData.toString('hex'), peripheral.uuid)
+    if (tagData) {
+      jdata.set(tagData.name, tagData.data)
+    }
   }
-  data.set(name, tagdata)
+
+  // a ruuvitag eddystone beacon is possibly found
+  if (serviceData && serviceData.uuid === 'feaa') {
+    const tagData = parser.parseRuuviEddystoneData(serviceData.data, peripheral.uuid)
+    if (tagData) {
+      jdata.set(tagData.name, tagData.data)
+    }
+  }
+}
+
+noble.on('discover', onDiscover)
+
+const scan = () => {
+  noble.startScanning([], true)
+  setTimeout(() => {
+    noble.stopScanning()
+  }, SCANTIME)
 }
 
 const jsonData = () => {
   const allData = []
-  for(const [key, value] of data) {
+  for(const [key, value] of jdata) {
     const sensor = {
       name: key,
       data: value
@@ -42,17 +48,9 @@ const jsonData = () => {
   return allData
 }
 
-function scan() {
-  scanner.startScanning()
-  setTimeout(() => {
-    scanner.stopScanning()
-  }, SCANTIME)
-}
-
-function start() {
+const start = () => {
   console.log('Starting ruuvitag scanner')
   setInterval(scan, SCANINTERVAL);
-  scan()
 }
 
 module.exports = {
