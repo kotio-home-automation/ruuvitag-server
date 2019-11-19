@@ -16,6 +16,10 @@ Bluetooth requires some utilities https://github.com/sandeepmistry/noble#linux. 
 
 Raspberry Pi and bluetooth low energy is a bit harder operation, see http://www.elinux.org/RPi_Bluetooth_LE if you are running RPi with wheezy or https://learn.adafruit.com/install-bluez-on-the-raspberry-pi/installation if you are running RPi with jessie.
 
+## Node.js and bluetooth
+
+**The co-operation of Node.js and bluetooth with current library dependencies requires that Node.js version is <= 9**
+
 ## Install dependencies
 
   ```
