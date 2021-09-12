@@ -12,8 +12,16 @@ const onDiscover = (peripheral) => {
 
   // a ruuvitag in raw mode is found
   if (manufacturerData && manufacturerData[0] === 0x99 && manufacturerData[1] === 0x04) {
-    const tagData = parser.parseRawTagData(manufacturerData.toString('hex'), peripheral.uuid)
-    if (tagData) {
+
+    if (manufacturerData[2] === 3) {
+      const tagData = parser.parseFormat3RawTagData(manufacturerData.toString('hex'), peripheral.uuid)
+      if (tagData) {
+        jdata.set(tagData.name, tagData.data)
+      }
+    }
+
+    if (manufacturerData[2] === 5) {
+      const tagData = parser.parseFormat5RawTagData(manufacturerData, peripheral.uuid)
       jdata.set(tagData.name, tagData.data)
     }
   }
