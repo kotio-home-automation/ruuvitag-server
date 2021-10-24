@@ -59,7 +59,7 @@ Kotio Ruuvitag server REST API works over http with JSON messages
 
 ### Fetching ruuvitag data
 
-URL: `http://localhost:3101/ruuvitag`
+URL: `http://localhost:3102/ruuvitag`
 
 Response format:
 
@@ -68,16 +68,16 @@ Response format:
   {
     "name": "Defined ruuvitage name or ruuvitag's id",
     "data": {
-      "temperature": 27,
+      "temperature": 27.12,
       "pressure": 1009,
-      "humidity": 43
+      "humidity": 43.13
     }
   }
 ]
 ```
 
-* temperature is in celsius without decimals
-* pressure is hPa
-* humidity is relative humidity percentage
+* temperature is in celsius with maximum of two decimals
+* pressure is hPa with maximum of two decimals
+* humidity is relative humidity percentage with maximum of two decimals
 
 Response is a array containing all found ruuvitags.
