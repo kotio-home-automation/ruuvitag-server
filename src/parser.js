@@ -38,9 +38,9 @@ const parseFormat3RawTagData = (rawData, uuid) => {
   const name = namedTag ? namedTag.name : uuid
 
   const tagData = {
-    temperature: temperature,
-    pressure: pressure,
-    humidity: humidity
+    temperature: temperature.toFixed(2),
+    pressure: pressure.toFixed(2),
+    humidity: humidity.toFixed(2)
   }
 
   return {
@@ -57,11 +57,11 @@ const parseFormat5RawTagData = (rawData, uuid) => {
   if (temperature > 32767) {
     temperature -= 65534;
   }
-  tagData.temperature = temperature / 200.0;
+  tagData.temperature = (temperature / 200.00).toFixed(2);
 
-  tagData.humidity = (((rawData[5] & 0xff) << 8) | (rawData[6] & 0xff)) / 400.0;
+  tagData.humidity = ((((rawData[5] & 0xff) << 8) | (rawData[6] & 0xff)) / 400.0).toFixed(2);
   const pressure = (((rawData[7] & 0xff) << 8) | (rawData[8] & 0xff)) + 50000;
-  tagData.pressure = (pressure > 1100) ? null : pressure
+  tagData.pressure = (pressure > 1100) ? null : pressure.toFixed(2)
 
   let accelerationX = (rawData[9] << 8) | (rawData[10] & 0xff);
   if (accelerationX > 32767) accelerationX -= 65536; // two's complement
@@ -143,9 +143,9 @@ const parseRuuviEddystoneData = (data, uuid) => {
     const name = namedTag ? namedTag.name : uuid
 
     tagData = {
-      temperature: temperature,
-      pressure: pressure,
-      humidity: humidity
+      temperature: temperature.toFixed(2),
+      pressure: pressure.toFixed(2),
+      humidity: humidity.toFixed(2)
     }
 
     return {
